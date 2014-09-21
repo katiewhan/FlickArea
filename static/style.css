@@ -1,0 +1,25 @@
+#title {
+	text-align: left;
+	font-size: 10pt;
+	font-family: Georgia;
+}
+
+.body {
+	font-family: Georgia;
+	font-size: 10pt;
+}
+
+body {
+	margin: 10% 5% 2% 10%;
+	background-color: #CD9B9B;
+}
+
+a:link {
+	color: #000000;
+	font-weight: bold;
+}
+
+a:visited {
+	color: #000000;
+	font-weight: bold;
+}

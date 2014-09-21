@@ -1,0 +1,34 @@
+$def with (loc, page, pid, thumbs)
+
+<html>
+	<head>
+		<title>FlickArea</title>
+		<link rel = "stylesheet" type = "text/css" href = "../../static/style.css">
+	</head>
+
+	<body>		
+		<div id = "title"> <a href = "/" style = "text-decoration: none;">FlickArea </a> : Use Flickr photos to identify an area box around desired location!</div>
+		<hr>
+		</br>
+		<div class = "body">
+			Please uncheck photos that do not represent your desired location and click "Search Again" for more photos.
+			Once all checked photos represent your desired location, please click "Show Area Box".
+			$if pid:
+				<form action = "/photos/$loc/$page" method = "POST">
+				<table cellpadding = 15>
+				$for x in range(1,5):
+					<tr>
+					$for i in range(5*(x-1), 5*x):
+						<td>
+						$if i < len(pid):
+							<img align = "center" src = "$thumbs[i]">
+							<input type = "checkbox" name = "$pid[i]" checked>
+						</td>
+					</tr>
+				</table>
+				<input type = "submit" name = "a" value = "Search Again">
+				<input type = "submit" name = "f" value = "Show Area Box">
+				</form>
+		</div>
+	</body>
+</html>

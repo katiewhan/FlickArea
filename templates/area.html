@@ -1,0 +1,68 @@
+$def with (minLat, minLng, maxLat, maxLng, data, info)
+<html>
+	<head>
+		<title>FlickArea</title>
+		<link rel = "stylesheet" type = "text/css" href = "../../static/style.css">
+		<script type = "text/javascript" src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyC71-0zkBg5m9r13fF-FnVIMd-SHJ0SNv0">
+		</script>
+	</head>
+
+	<body onload = "go($minLat, $minLng, $maxLat, $maxLng, $data, $info)">
+		<div id = "title"> <a href = "/" style = "text-decoration: none;">FlickArea </a> : Use Flickr photos to identify an area box around desired location!</div>
+		<hr>
+		</br>
+		<div class = "body">
+			Your area box is displayed on the map below. The red markers represent the exact locations of the photos.
+			Darker markers indicate that more than one photo was taken at that location.
+			Click the "Back" button to go back go results and fix your selections.
+		</div>
+		<div id = "map-canvas" style = "width: 100%; height: 80%;"></div>
+		</br>
+		<button onclick="back()">Back</button>
+
+		<script>
+			function init(minLat, minLng, maxLat, maxLng, data, info) {
+				var mapOpt = {
+					center: new google.maps.LatLng(minLat, minLng),
+					zoom: 10
+				};
+				var map = new google.maps.Map(document.getElementById("map-canvas"), mapOpt);
+				var min = new google.maps.LatLng(minLat, minLng);
+				var max = new google.maps.LatLng(maxLat, maxLng);
+				var bound = new google.maps.LatLngBounds();
+				bound.extend(min);
+				bound.extend(max);
+				map.fitBounds(bound);
+				var rectangle = new google.maps.Rectangle({strokeColor: '#FF0000', 
+					strokeOpacity: 0.6,
+					strokeWeight: 2,
+					fillColor: '#FFDFDD',
+					fillOpacity: 0.3,
+					map: map, 
+					bounds: bound});
+
+				function infoWin(marker, index) {
+					return function() {
+						marker.info.setContent("<img src =" + info[index] + ">");
+						marker.info.open(map, marker);
+					}
+				}
+
+				for (var i = 0; i < (data.length - 1); i++) {
+					var pos = new google.maps.LatLng(data[i][0], data[i][1]);
+					var mark = new google.maps.Marker({position: pos, map: map, opacity: 0.7});
+					mark.info = new google.maps.InfoWindow();
+					google.maps.event.addListener(mark, 'click', infoWin(mark, i));
+				};
+			}
+
+			function go(minLat, minLng, maxLat, maxLng, data, info) {
+				google.maps.event.addDomListener(window, 'load', init(minLat, minLng, maxLat, maxLng, data, info));
+			}
+
+			function back() {
+				window.history.back();
+			}
+		</script>
+	</body>
+</html>
