@@ -20,11 +20,14 @@ render = web.template.render('templates/')
 def internalerror():
     return web.internalerror("Oops, something went wrong. Try again!")
 
+# first page
 class index:
     def GET(self):
         return render.index()
 
+# photo results page
 class photos:
+    # send search criteria to flickr api and return list of photo ids
     def search(self, intext, **args):
         pid = []
         param = dict (text = intext,
@@ -55,6 +58,7 @@ class photos:
 
         return pid
 
+    # get small sized photos for each photo id and return set of picture sources
     def size(self, pid):
         pics = []
         print "Loading..."
@@ -73,29 +77,34 @@ class photos:
         
         return pics
                           
+    # render page with photos 
     def GET(self):
         loc = web.input()['location']
         pid = self.search(loc)
         pics = self.size(pid)
 
         return render.photos(loc, 1, pid, pics)
-        
+    
+    # get user selection of photos
     def POST(self, args):
         parts = args.split('/')
         loc = urllib.unquote(parts[0]).decode('utf8')
         pg = int(parts[1]) + 1
         valid = web.input().keys()
 
+        # no selection, return next set of searched photos
         if 'a' in valid:
             valid.remove('a')
             pid = self.search(loc, page = pg, validp = valid)
             pics = self.size(pid)
 
             return render.photos(loc, pg, pid, pics)
+        # return area box
         else:
             valid.remove('f')
             return self.area(valid)
 
+    # get minimum and maximum longitude and latitude of selected photos and render page with area map
     def area(self, valid):
         pid = valid
         data = []
